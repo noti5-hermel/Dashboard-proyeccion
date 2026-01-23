@@ -1,60 +1,37 @@
 
-const pool = require('../database');
+const pool = require('../db');
 
-const insert = async (data) => {
-  if (data.length === 0) {
-    return;
-  }
-
-  const columns = Object.keys(data[0]);
-  const columnNames = columns.map(col => `"${col}"`).join(', ');
-  const valuePlaceholders = columns.map((_, i) => `$${i + 1}`).join(', ');
-  const query = `INSERT INTO route (${columnNames}) VALUES (${valuePlaceholders})`;
-
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    for (const row of data) {
-      const values = columns.map(col => row[col]);
-      await client.query(query, values);
-    }
-    await client.query('COMMIT');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
+const insert = async (routes) => {
+  for (const route of routes) {
+    await pool.query('INSERT INTO route (route_number) VALUES ($1)', [route.route_number]);
   }
 };
 
 const create = async (route) => {
-  const columns = Object.keys(route);
-  const columnNames = columns.map(col => `"${col}"`).join(', ');
-  const valuePlaceholders = columns.map((_, i) => `$${i + 1}`).join(', ');
-  const query = `INSERT INTO route (${columnNames}) VALUES (${valuePlaceholders}) RETURNING *`;
-  const values = columns.map(col => route[col]);
-  const result = await pool.query(query, values);
+  const { route_number } = route;
+  const result = await pool.query(
+    'INSERT INTO route (route_number) VALUES ($1) RETURNING *',
+    [route_number]
+  );
   return result.rows[0];
 };
 
 const get = async () => {
-  const query = 'SELECT * FROM route';
-  const result = await pool.query(query);
+  const result = await pool.query('SELECT * FROM route');
   return result.rows;
 };
 
 const update = async (id, route) => {
-  const columns = Object.keys(route);
-  const set = columns.map((col, i) => `"${col}" = $${i + 1}`).join(', ');
-  const query = `UPDATE route SET ${set} WHERE id = $${columns.length + 1} RETURNING *`;
-  const values = [...columns.map(col => route[col]), id];
-  const result = await pool.query(query, values);
+  const { route_number } = route;
+  const result = await pool.query(
+    'UPDATE route SET route_number = $1 WHERE route_number = $2 RETURNING *',
+    [route_number, id]
+  );
   return result.rows[0];
 };
 
 const remove = async (id) => {
-  const query = 'DELETE FROM route WHERE id = $1';
-  await pool.query(query, [id]);
+  await pool.query('DELETE FROM route WHERE route_number = $1', [id]);
 };
 
 module.exports = { insert, create, get, update, remove };
