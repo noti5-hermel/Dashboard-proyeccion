@@ -42,6 +42,21 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
 - **`POST /product`**: Crea un nuevo producto.
+  - **Header**: `Content-Type: application/json`
+  - **Ejemplo de Body**:
+    ```json
+    {
+      "code": "P001",
+      "description": "Descripción del Producto"
+    }
+    ```
+  - **Respuesta Exitosa (201 Created)**:
+    ```json
+    {
+      "code": "P001",
+      "description": "Descripción del Producto"
+    }
+    ```
 
 - **`GET /product`**: Obtiene la lista de todos los productos.
 
@@ -57,6 +72,23 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
 - **`POST /client`**: Crea un nuevo cliente.
+  - **Header**: `Content-Type: application/json`
+  - **Ejemplo de Body**:
+    ```json
+    {
+      "code": "C001",
+      "name_c": "Nombre del Cliente",
+      "route_number": 101
+    }
+    ```
+  - **Respuesta Exitosa (201 Created)**:
+    ```json
+    {
+      "code": "C001",
+      "name_c": "Nombre del Cliente",
+      "route_number": 101
+    }
+    ```
 
 - **`GET /client`**: Obtiene la lista de todos los clientes.
 
@@ -72,6 +104,19 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
 - **`POST /route`**: Crea una nueva ruta.
+  - **Header**: `Content-Type: application/json`
+  - **Ejemplo de Body**:
+    ```json
+    {
+      "route_number": 101
+    }
+    ```
+  - **Respuesta Exitosa (201 Created)**:
+    ```json
+    {
+      "route_number": 101
+    }
+    ```
 
 - **`GET /route`**: Obtiene la lista de todas las rutas.
 
