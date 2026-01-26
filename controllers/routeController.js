@@ -35,6 +35,16 @@ const get = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    const route = await routeService.getRouteById(req.params.id);
+    res.status(200).json(route);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting route.');
+  }
+};
+
 const update = async (req, res) => {
   try {
     const updatedRoute = await routeService.updateRoute(req.params.id, req.body);
@@ -55,4 +65,4 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { upload, create, get, update, remove };
+module.exports = { upload, create, get, getById, update, remove };

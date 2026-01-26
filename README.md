@@ -45,6 +45,8 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
 
 - **`GET /product`**: Obtiene la lista de todos los productos.
 
+- **`GET /product/:id`**: Obtiene un producto por su ID.
+
 - **`PUT /product/:id`**: Actualiza un producto existente.
 
 - **`DELETE /product/:id`**: Elimina un producto.
@@ -58,6 +60,8 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
 
 - **`GET /client`**: Obtiene la lista de todos los clientes.
 
+- **`GET /client/:id`**: Obtiene un cliente por su ID.
+
 - **`PUT /client/:id`**: Actualiza un cliente existente.
 
 - **`DELETE /client/:id`**: Elimina un cliente.
@@ -70,6 +74,8 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
 - **`POST /route`**: Crea una nueva ruta.
 
 - **`GET /route`**: Obtiene la lista de todas las rutas.
+
+- **`GET /route/:id`**: Obtiene una ruta por su ID.
 
 - **`PUT /route/:id`**: Actualiza una ruta existente.
 

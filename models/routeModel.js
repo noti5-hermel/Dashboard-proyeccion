@@ -21,6 +21,11 @@ const get = async () => {
   return result.rows;
 };
 
+const getById = async (id) => {
+  const result = await pool.query('SELECT * FROM route WHERE route_number = $1', [id]);
+  return result.rows[0];
+};
+
 const update = async (id, route) => {
   const { route_number } = route;
   const result = await pool.query(
@@ -34,4 +39,4 @@ const remove = async (id) => {
   await pool.query('DELETE FROM route WHERE route_number = $1', [id]);
 };
 
-module.exports = { insert, create, get, update, remove };
+module.exports = { insert, create, get, getById, update, remove };

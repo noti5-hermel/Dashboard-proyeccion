@@ -43,6 +43,12 @@ const get = async () => {
   return result.rows;
 };
 
+const getById = async (id) => {
+  const query = 'SELECT * FROM product WHERE id = $1';
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
+};
+
 const update = async (id, product) => {
   const columns = Object.keys(product);
   const set = columns.map((col, i) => `"${col}" = $${i + 1}`).join(', ');
@@ -57,4 +63,4 @@ const remove = async (id) => {
   await pool.query(query, [id]);
 };
 
-module.exports = { insert, create, get, update, remove };
+module.exports = { insert, create, get, getById, update, remove };

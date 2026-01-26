@@ -18,6 +18,10 @@ const getProducts = async () => {
   return await productModel.get();
 };
 
+const getProductById = async (id) => {
+  return await productModel.getById(id);
+};
+
 const updateProduct = async (id, product) => {
   return await productModel.update(id, product);
 };
@@ -30,6 +34,7 @@ module.exports = {
   uploadProducts,
   createProduct,
   getProducts,
+  getProductById,
   updateProduct,
   deleteProduct,
 };

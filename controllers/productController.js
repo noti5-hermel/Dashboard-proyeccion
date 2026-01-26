@@ -35,6 +35,16 @@ const get = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting product.');
+  }
+};
+
 const update = async (req, res) => {
   try {
     const updatedProduct = await productService.updateProduct(req.params.id, req.body);
@@ -55,4 +65,4 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { upload, create, get, update, remove };
+module.exports = { upload, create, get, getById, update, remove };

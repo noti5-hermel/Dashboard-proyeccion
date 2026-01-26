@@ -1,6 +1,5 @@
 
-const clientModel = require('../models/clientModel');
-const uploadService = require('./uploadService');
+const clientService = require('../services/clientService');
 
 const uploadClients = async (file) => {
   const data = uploadService.parseExcel(file);
@@ -18,6 +17,10 @@ const getClients = async () => {
   return await clientModel.get();
 };
 
+const getClientById = async (id) => {
+  return await clientModel.getById(id);
+};
+
 const updateClient = async (id, client) => {
   return await clientModel.update(id, client);
 };
@@ -30,6 +33,7 @@ module.exports = {
   uploadClients,
   createClient,
   getClients,
+  getClientById,
   updateClient,
   deleteClient,
 };

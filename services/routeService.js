@@ -18,6 +18,10 @@ const getRoutes = async () => {
   return await routeModel.get();
 };
 
+const getRouteById = async (id) => {
+  return await routeModel.getById(id);
+};
+
 const updateRoute = async (id, route) => {
   return await routeModel.update(id, route);
 };
@@ -30,6 +34,7 @@ module.exports = {
   uploadRoutes,
   createRoute,
   getRoutes,
+  getRouteById,
   updateRoute,
   deleteRoute,
 };

@@ -10,6 +10,7 @@ const upload = multer({ storage: storage });
 router.post('/upload/product', upload.single('file'), productController.upload);
 router.post('/product', productController.create);
 router.get('/product', productController.get);
+router.get('/product/:id', productController.getById);
 router.put('/product/:id', productController.update);
 router.delete('/product/:id', productController.remove);
 

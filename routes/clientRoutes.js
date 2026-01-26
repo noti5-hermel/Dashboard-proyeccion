@@ -10,6 +10,7 @@ const upload = multer({ storage: storage });
 router.post('/upload/client', upload.single('file'), clientController.upload);
 router.post('/client', clientController.create);
 router.get('/client', clientController.get);
+router.get('/client/:id', clientController.getById);
 router.put('/client/:id', clientController.update);
 router.delete('/client/:id', clientController.remove);
 

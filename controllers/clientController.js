@@ -35,6 +35,16 @@ const get = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    const client = await clientService.getClientById(req.params.id);
+    res.status(200).json(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting client.');
+  }
+};
+
 const update = async (req, res) => {
   try {
     const updatedClient = await clientService.updateClient(req.params.id, req.body);
@@ -55,4 +65,4 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { upload, create, get, update, remove };
+module.exports = { upload, create, get, getById, update, remove };
