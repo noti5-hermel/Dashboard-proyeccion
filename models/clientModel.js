@@ -44,7 +44,7 @@ const get = async () => {
 };
 
 const getById = async (id) => {
-  const query = 'SELECT * FROM client WHERE id = $1';
+  const query = 'SELECT * FROM client WHERE code = $1';
   const result = await pool.query(query, [id]);
   return result.rows[0];
 };
@@ -52,14 +52,14 @@ const getById = async (id) => {
 const update = async (id, client) => {
   const columns = Object.keys(client);
   const set = columns.map((col, i) => `"${col}" = $${i + 1}`).join(', ');
-  const query = `UPDATE client SET ${set} WHERE id = $${columns.length + 1} RETURNING *`;
+  const query = `UPDATE client SET ${set} WHERE code = $${columns.length + 1} RETURNING *`;
   const values = [...columns.map(col => client[col]), id];
   const result = await pool.query(query, values);
   return result.rows[0];
 };
 
 const remove = async (id) => {
-  const query = 'DELETE FROM client WHERE id = $1';
+  const query = 'DELETE FROM client WHERE code = $1';
   await pool.query(query, [id]);
 };
 

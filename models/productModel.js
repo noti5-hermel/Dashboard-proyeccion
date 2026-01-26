@@ -44,7 +44,7 @@ const get = async () => {
 };
 
 const getById = async (id) => {
-  const query = 'SELECT * FROM product WHERE id = $1';
+  const query = 'SELECT * FROM product WHERE code = $1';
   const result = await pool.query(query, [id]);
   return result.rows[0];
 };
@@ -52,14 +52,14 @@ const getById = async (id) => {
 const update = async (id, product) => {
   const columns = Object.keys(product);
   const set = columns.map((col, i) => `"${col}" = $${i + 1}`).join(', ');
-  const query = `UPDATE product SET ${set} WHERE id = $${columns.length + 1} RETURNING *`;
+  const query = `UPDATE product SET ${set} WHERE code = $${columns.length + 1} RETURNING *`;
   const values = [...columns.map(col => product[col]), id];
   const result = await pool.query(query, values);
   return result.rows[0];
 };
 
 const remove = async (id) => {
-  const query = 'DELETE FROM product WHERE id = $1';
+  const query = 'DELETE FROM product WHERE code = $1';
   await pool.query(query, [id]);
 };
 
