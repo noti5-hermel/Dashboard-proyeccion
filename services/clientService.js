@@ -1,5 +1,6 @@
 
-const clientService = require('../services/clientService');
+const clientModel = require('../models/clientModel');
+const uploadService = require('./uploadService');
 
 const uploadClients = async (file) => {
   const data = uploadService.parseExcel(file);
