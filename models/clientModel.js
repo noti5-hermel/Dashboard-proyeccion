@@ -1,5 +1,5 @@
 
-const pool = require('../database');
+const pool = require('../db');
 
 const insert = async (data) => {
   if (data.length === 0) {
