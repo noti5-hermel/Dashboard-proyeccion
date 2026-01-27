@@ -1,3 +1,4 @@
+
 # API de Carga de Datos Masiva
 
 Esta es una API para un sistema de gestión de productos, clientes, rutas e historial de ventas, con la capacidad de cargar datos masivamente desde archivos Excel.
@@ -35,80 +36,57 @@ Esta es una API para un sistema de gestión de productos, clientes, rutas e hist
 
 ## Endpoints de la API
 
-Todos los endpoints tienen el prefijo `/api`.
-
 ### Productos
 
-- **`POST /api/upload/product`**: Carga un archivo Excel para añadir productos masivamente.
+- **`POST /upload/product`**: Carga un archivo Excel para añadir productos masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /api/product`**: Crea un nuevo producto.
-  - **Ejemplo de Body**:
-    ```json
-    {
-      "code": "P001",
-      "description": "Descripción del Producto"
-    }
-    ```
+- **`POST /product`**: Crea un nuevo producto.
 
-- **`GET /api/product`**: Obtiene la lista de todos los productos.
+- **`GET /product`**: Obtiene la lista de todos los productos.
 
-- **`GET /api/product/:id`**: Obtiene un producto por su ID.
+- **`GET /product/:id`**: Obtiene un producto por su ID.
 
-- **`PUT /api/product/:id`**: Actualiza un producto existente.
+- **`PUT /product/:id`**: Actualiza un producto existente.
 
-- **`DELETE /api/product/:id`**: Elimina un producto.
+- **`DELETE /product/:id`**: Elimina un producto.
 
 ### Clientes
 
-- **`POST /api/upload/client`**: Carga un archivo Excel para añadir clientes masivamente.
+- **`POST /upload/client`**: Carga un archivo Excel para añadir clientes masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /api/client`**: Crea un nuevo cliente.
-  - **Ejemplo de Body**:
-    ```json
-    {
-      "code": "C001",
-      "name_c": "Nombre del Cliente",
-      "route_number": 101
-    }
-    ```
+- **`POST /client`**: Crea un nuevo cliente.
 
-- **`GET /api/client`**: Obtiene la lista de todos los clientes.
+- **`GET /client`**: Obtiene la lista de todos los clientes.
 
-- **`GET /api/client/:id`**: Obtiene un cliente por su ID.
+- **`GET /client/:id`**: Obtiene un cliente por su ID.
 
-- **`PUT /api/client/:id`**: Actualiza un cliente existente.
+- **`PUT /client/:id`**: Actualiza un cliente existente.
 
-- **`DELETE /api/client/:id`**: Elimina un cliente.
+- **`DELETE /client/:id`**: Elimina un cliente.
 
 ### Rutas
 
-- **`POST /api/upload/route`**: Carga un archivo Excel para añadir rutas masivamente.
+- **`POST /upload/route`**: Carga un archivo Excel para añadir rutas masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /api/route`**: Crea una nueva ruta.
-  - **Ejemplo de Body**:
-    ```json
-    {
-      "route_number": 101
-    }
-    ```
+- **`POST /route`**: Crea una nueva ruta.
 
-- **`GET /api/route`**: Obtiene la lista de todas las rutas.
+- **`GET /route`**: Obtiene la lista de todas las rutas.
 
-- **`GET /api/route/:id`**: Obtiene una ruta por su ID.
+- **`GET /route/:id`**: Obtiene una ruta por su ID.
 
-- **`PUT /api/route/:id`**: Actualiza una ruta existente.
+- **`PUT /route/:id`**: Actualiza una ruta existente.
 
-- **`DELETE /api/route/:id`**: Elimina una ruta.
+- **`DELETE /route/:id`**: Elimina una ruta.
 
 ### Historial de Ventas (Sales History)
 
-- **`POST /api/sales-history/upload`**: Carga un archivo Excel para añadir registros de ventas masivamente.
+- **`POST /upload/sales-history`**: Carga un archivo Excel para añadir registros de ventas masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /api/sales-history`**: Crea un nuevo registro de venta.
+- **`POST /sales-history`**: Crea un nuevo registro de venta.
   - **Ejemplo de Body**:
     ```json
     {
@@ -126,10 +104,10 @@ Todos los endpoints tienen el prefijo `/api`.
     }
     ```
 
-- **`GET /api/sales-history`**: Obtiene todos los registros de ventas.
+- **`GET /sales-history`**: Obtiene todos los registros de ventas.
 
-- **`GET /api/sales-history/:invoiceNumber`**: Obtiene todos los registros asociados a un número de factura.
+- **`GET /sales-history/:invoiceNumber`**: Obtiene todos los registros asociados a un número de factura.
 
-- **`PUT /api/sales-history/:invoiceNumber`**: Actualiza los registros de un número de factura.
+- **`PUT /sales-history/:invoiceNumber`**: Actualiza los registros de un número de factura.
 
-- **`DELETE /api/sales-history/:invoiceNumber`**: Elimina todos los registros asociados a un número de factura.
+- **`DELETE /sales-history/:invoiceNumber`**: Elimina todos los registros asociados a un número de factura.

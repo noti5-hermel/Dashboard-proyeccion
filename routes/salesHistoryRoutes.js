@@ -8,13 +8,13 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 // Route for massive data upload from Excel
-router.post('/upload', upload.single('file'), salesHistoryController.upload);
+router.post('/upload/sales-history', upload.single('file'), salesHistoryController.upload);
 
 // Standard CRUD routes
-router.post('/', salesHistoryController.create);
-router.get('/', salesHistoryController.get);
-router.get('/:invoiceNumber', salesHistoryController.getByInvoiceNumber);
-router.put('/:invoiceNumber', salesHistoryController.update);
-router.delete('/:invoiceNumber', salesHistoryController.remove);
+router.post('/sales-history', salesHistoryController.create);
+router.get('/sales-history', salesHistoryController.get);
+router.get('/sales-history/:invoiceNumber', salesHistoryController.getByInvoiceNumber);
+router.put('/sales-history/:invoiceNumber', salesHistoryController.update);
+router.delete('/sales-history/:invoiceNumber', salesHistoryController.remove);
 
 module.exports = router;
