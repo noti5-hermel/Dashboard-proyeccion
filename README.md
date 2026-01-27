@@ -1,7 +1,6 @@
-
 # API de Carga de Datos Masiva
 
-Esta es una API para un sistema de gestión de productos, clientes y rutas, con la capacidad de cargar datos masivamente desde archivos Excel.
+Esta es una API para un sistema de gestión de productos, clientes, rutas e historial de ventas, con la capacidad de cargar datos masivamente desde archivos Excel.
 
 ## Requisitos
 
@@ -36,13 +35,14 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
 
 ## Endpoints de la API
 
+Todos los endpoints tienen el prefijo `/api`.
+
 ### Productos
 
-- **`POST /upload/product`**: Carga un archivo Excel para añadir productos masivamente.
+- **`POST /api/upload/product`**: Carga un archivo Excel para añadir productos masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /product`**: Crea un nuevo producto.
-  - **Header**: `Content-Type: application/json`
+- **`POST /api/product`**: Crea un nuevo producto.
   - **Ejemplo de Body**:
     ```json
     {
@@ -50,29 +50,21 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
       "description": "Descripción del Producto"
     }
     ```
-  - **Respuesta Exitosa (201 Created)**:
-    ```json
-    {
-      "code": "P001",
-      "description": "Descripción del Producto"
-    }
-    ```
 
-- **`GET /product`**: Obtiene la lista de todos los productos.
+- **`GET /api/product`**: Obtiene la lista de todos los productos.
 
-- **`GET /product/:id`**: Obtiene un producto por su ID.
+- **`GET /api/product/:id`**: Obtiene un producto por su ID.
 
-- **`PUT /product/:id`**: Actualiza un producto existente.
+- **`PUT /api/product/:id`**: Actualiza un producto existente.
 
-- **`DELETE /product/:id`**: Elimina un producto.
+- **`DELETE /api/product/:id`**: Elimina un producto.
 
 ### Clientes
 
-- **`POST /upload/client`**: Carga un archivo Excel para añadir clientes masivamente.
+- **`POST /api/upload/client`**: Carga un archivo Excel para añadir clientes masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /client`**: Crea un nuevo cliente.
-  - **Header**: `Content-Type: application/json`
+- **`POST /api/client`**: Crea un nuevo cliente.
   - **Ejemplo de Body**:
     ```json
     {
@@ -81,47 +73,63 @@ Esta es una API para un sistema de gestión de productos, clientes y rutas, con 
       "route_number": 101
     }
     ```
-  - **Respuesta Exitosa (201 Created)**:
-    ```json
-    {
-      "code": "C001",
-      "name_c": "Nombre del Cliente",
-      "route_number": 101
-    }
-    ```
 
-- **`GET /client`**: Obtiene la lista de todos los clientes.
+- **`GET /api/client`**: Obtiene la lista de todos los clientes.
 
-- **`GET /client/:id`**: Obtiene un cliente por su ID.
+- **`GET /api/client/:id`**: Obtiene un cliente por su ID.
 
-- **`PUT /client/:id`**: Actualiza un cliente existente.
+- **`PUT /api/client/:id`**: Actualiza un cliente existente.
 
-- **`DELETE /client/:id`**: Elimina un cliente.
+- **`DELETE /api/client/:id`**: Elimina un cliente.
 
 ### Rutas
 
-- **`POST /upload/route`**: Carga un archivo Excel para añadir rutas masivamente.
+- **`POST /api/upload/route`**: Carga un archivo Excel para añadir rutas masivamente.
   - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
 
-- **`POST /route`**: Crea una nueva ruta.
-  - **Header**: `Content-Type: application/json`
+- **`POST /api/route`**: Crea una nueva ruta.
   - **Ejemplo de Body**:
     ```json
     {
       "route_number": 101
     }
     ```
-  - **Respuesta Exitosa (201 Created)**:
+
+- **`GET /api/route`**: Obtiene la lista de todas las rutas.
+
+- **`GET /api/route/:id`**: Obtiene una ruta por su ID.
+
+- **`PUT /api/route/:id`**: Actualiza una ruta existente.
+
+- **`DELETE /api/route/:id`**: Elimina una ruta.
+
+### Historial de Ventas (Sales History)
+
+- **`POST /api/sales-history/upload`**: Carga un archivo Excel para añadir registros de ventas masivamente.
+  - **Body**: `form-data`, `key`: "file", `value`: (tu archivo .xlsx)
+
+- **`POST /api/sales-history`**: Crea un nuevo registro de venta.
+  - **Ejemplo de Body**:
     ```json
     {
-      "route_number": 101
+        "code_p": "P001",
+        "description_p": "Producto A",
+        "shipped_quantity": 10,
+        "invoice_number": 9876,
+        "code_c": "C001",
+        "name_c": "Cliente Uno",
+        "extended_amount": 150.50,
+        "route_number": 101,
+        "transaction_date": "2023-10-27",
+        "your": "dato1",
+        "tax": 15
     }
     ```
 
-- **`GET /route`**: Obtiene la lista de todas las rutas.
+- **`GET /api/sales-history`**: Obtiene todos los registros de ventas.
 
-- **`GET /route/:id`**: Obtiene una ruta por su ID.
+- **`GET /api/sales-history/:invoiceNumber`**: Obtiene todos los registros asociados a un número de factura.
 
-- **`PUT /route/:id`**: Actualiza una ruta existente.
+- **`PUT /api/sales-history/:invoiceNumber`**: Actualiza los registros de un número de factura.
 
-- **`DELETE /route/:id`**: Elimina una ruta.
+- **`DELETE /api/sales-history/:invoiceNumber`**: Elimina todos los registros asociados a un número de factura.
