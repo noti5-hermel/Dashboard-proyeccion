@@ -4,8 +4,9 @@ const router = express.Router();
 const salesHistoryController = require('../controllers/salesHistoryController');
 const multer = require('multer');
 
-// Configure multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+// Configure multer for file uploads in memory
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Route for massive data upload from Excel
 router.post('/upload/sales-history', upload.single('file'), salesHistoryController.upload);
