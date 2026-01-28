@@ -2,48 +2,61 @@
 const salesHistoryModel = require('../models/salesHistoryModel');
 const uploadService = require('./uploadService');
 
+// --- Helper Functions ---
 function convertExcelDate(serial) {
-  if (typeof serial !== 'number' || serial <= 0) {
-    return serial;
-  }
+  if (typeof serial !== 'number' || serial <= 0) return serial;
   const date = new Date((serial - 25569) * 86400 * 1000);
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 }
 
-const uploadSalesHistory = async (file) => {
-  const jsonData = uploadService.parseExcel(file);
-  if (!jsonData || jsonData.length === 0) {
-    throw new Error('Excel file is empty or has no data.');
-  }
-
-  const transformedData = jsonData.map(row => {
-    if (row.transaction_date && typeof row.transaction_date === 'number') {
-      return { ...row, transaction_date: convertExcelDate(row.transaction_date) };
-    }
-    return row;
-  });
-
-  // --- Validation Step (Corrected for the new schema) ---
-  // Columns that MUST be integers according to the new schema.
+function validateRows(data) {
   const integerColumns = ['invoice_number', 'route_number', 'tax'];
-
-  for (let i = 0; i < transformedData.length; i++) {
-    const row = transformedData[i];
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
     for (const column of integerColumns) {
       const value = row[column];
-      // Check if value exists and is not a valid integer.
       if (value !== null && value !== undefined && !Number.isInteger(Number(value))) {
-        throw new Error(`Error en la fila ${i + 2} del Excel: La columna '${column}' tiene el valor "${value}", que no es un número entero válido. Por favor, corrija el archivo.`);
+        // Note: The row number here is relative to the batch, not the Excel file.
+        // For true accuracy, we would pass the global index.
+        throw new Error(`Error de validación en la columna '${column}' con valor "${value}". No es un número entero válido.`);
       }
     }
   }
+}
 
-  return await salesHistoryModel.insert(transformedData);
+// --- Main Batch Processing Function ---
+const uploadSalesHistoryInBatches = async (file) => {
+  const allData = uploadService.parseExcel(file);
+  if (!allData || allData.length === 0) {
+    throw new Error('El archivo Excel está vacío o no contiene datos.');
+  }
+
+  const BATCH_SIZE = 1000; // Process 1000 rows at a time
+  console.log(`Comenzando procesamiento por lotes de ${allData.length} filas, en lotes de ${BATCH_SIZE}.`);
+
+  for (let i = 0; i < allData.length; i += BATCH_SIZE) {
+    const batch = allData.slice(i, i + BATCH_SIZE);
+    console.log(`Procesando lote: filas ${i + 1} a ${i + batch.length}...`);
+
+    // 1. Transform dates in the current batch
+    const transformedBatch = batch.map(row => {
+      if (row.transaction_date && typeof row.transaction_date === 'number') {
+        return { ...row, transaction_date: convertExcelDate(row.transaction_date) };
+      }
+      return row;
+    });
+
+    // 2. Validate the current batch
+    validateRows(transformedBatch);
+
+    // 3. Insert the validated and transformed batch into the database
+    await salesHistoryModel.insert(transformedBatch); // The model's insert is already transactional
+    console.log(`Lote de ${batch.length} filas insertado correctamente.`);
+  }
+  console.log('Todas las filas han sido procesadas e insertadas.');
 };
 
+// --- Standard CRUD Functions (remain unchanged) ---
 const createSale = async (sale) => {
   return await salesHistoryModel.create(sale);
 };
@@ -65,7 +78,7 @@ const deleteSalesByInvoiceNumber = async (invoiceNumber) => {
 };
 
 module.exports = {
-  uploadSalesHistory,
+  uploadSalesHistoryInBatches, // Correctly exported the new function
   createSale,
   getSalesHistory,
   getSalesByInvoiceNumber,
