@@ -26,15 +26,16 @@ const uploadSalesHistory = async (file) => {
     return row;
   });
 
-  // --- Validation Step ---
-  const integerColumns = ['shipped_quantity', 'invoice_number', 'route_number', 'tax'];
+  // --- Validation Step (Corrected for the new schema) ---
+  // Columns that MUST be integers according to the new schema.
+  const integerColumns = ['invoice_number', 'route_number', 'tax'];
+
   for (let i = 0; i < transformedData.length; i++) {
     const row = transformedData[i];
     for (const column of integerColumns) {
       const value = row[column];
-      // Check if value exists and is not a valid integer
+      // Check if value exists and is not a valid integer.
       if (value !== null && value !== undefined && !Number.isInteger(Number(value))) {
-        // Throw a detailed error. Row number is i + 2 (Excel is 1-based + header).
         throw new Error(`Error en la fila ${i + 2} del Excel: La columna '${column}' tiene el valor "${value}", que no es un número entero válido. Por favor, corrija el archivo.`);
       }
     }
