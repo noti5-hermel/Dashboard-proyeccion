@@ -8,8 +8,12 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Route for massive data upload from Excel
-router.post('/upload/sales-history', upload.single('file'), salesHistoryController.upload);
+// Route for massive data upload from Excel with an extended timeout
+router.post('/upload/sales-history', upload.single('file'), (req, res, next) => {
+  // Set a 10-minute timeout for this specific route
+  req.setTimeout(600000); 
+  salesHistoryController.upload(req, res, next);
+});
 
 // Standard CRUD routes
 router.post('/sales-history', salesHistoryController.create);
