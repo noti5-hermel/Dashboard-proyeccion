@@ -2,22 +2,14 @@
 const salesHistoryModel = require('../models/salesHistoryModel');
 const uploadService = require('./uploadService');
 
-/**
- * Converts an Excel serial number date to a YYYY-MM-DD format.
- * @param {number} serial - The Excel serial number for the date.
- * @returns {string|null} The date in YYYY-MM-DD format or the original value if invalid.
- */
 function convertExcelDate(serial) {
   if (typeof serial !== 'number' || serial <= 0) {
-    return serial; // Return original value if it's not a valid serial number
+    return serial;
   }
-  // The number of days between the Unix epoch (1970-01-01) and the Excel epoch (1900-01-01) is 25569.
-  // We create a date in UTC to avoid timezone-related issues.
   const date = new Date((serial - 25569) * 86400 * 1000);
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
   const day = String(date.getUTCDate()).padStart(2, '0');
-
   return `${year}-${month}-${day}`;
 }
 
@@ -27,17 +19,26 @@ const uploadSalesHistory = async (file) => {
     throw new Error('Excel file is empty or has no data.');
   }
 
-  // Transform the date field for each row before inserting
   const transformedData = jsonData.map(row => {
-    // Check if the transaction_date field exists and is a number (Excel serial date)
     if (row.transaction_date && typeof row.transaction_date === 'number') {
-      return {
-        ...row,
-        transaction_date: convertExcelDate(row.transaction_date),
-      };
+      return { ...row, transaction_date: convertExcelDate(row.transaction_date) };
     }
     return row;
   });
+
+  // --- Validation Step ---
+  const integerColumns = ['shipped_quantity', 'invoice_number', 'route_number', 'tax'];
+  for (let i = 0; i < transformedData.length; i++) {
+    const row = transformedData[i];
+    for (const column of integerColumns) {
+      const value = row[column];
+      // Check if value exists and is not a valid integer
+      if (value !== null && value !== undefined && !Number.isInteger(Number(value))) {
+        // Throw a detailed error. Row number is i + 2 (Excel is 1-based + header).
+        throw new Error(`Error en la fila ${i + 2} del Excel: La columna '${column}' tiene el valor "${value}", que no es un número entero válido. Por favor, corrija el archivo.`);
+      }
+    }
+  }
 
   return await salesHistoryModel.insert(transformedData);
 };
