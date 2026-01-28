@@ -1,16 +1,26 @@
 
 const salesHistoryService = require('../services/salesHistoryService');
 
-const upload = async (req, res) => {
+const upload = (req, res) => { // Removed async
   if (!req.file) {
     return res.status(400).send({ message: 'No file uploaded.' });
   }
-  try {
-    await salesHistoryService.uploadSalesHistory(req.file);
-    res.status(200).send({ message: 'Sales history uploaded successfully.' });
-  } catch (error) {
-    res.status(500).send({ message: 'Error uploading sales history.', error: error.message });
-  }
+
+  // Start the background process without waiting for it to finish
+  salesHistoryService.uploadSalesHistoryInBatches(req.file)
+    .then(() => {
+      // This part will execute when the long process is truly finished.
+      // Here you could implement a notification system (e.g., WebSocket, email)
+      console.log('SUCCESS: Sales history processing completed successfully.');
+    })
+    .catch(error => {
+      // This will catch any error during the long background process.
+      // It's crucial to log this properly as the client is already disconnected.
+      console.error('BACKGROUND ERROR: Error during batch processing of sales history:', error);
+    });
+
+  // Respond immediately to the client
+  res.status(202).send({ message: 'El archivo ha sido recibido y el proceso de carga ha comenzado en segundo plano. Esto puede tardar varios minutos.' });
 };
 
 const create = async (req, res) => {
