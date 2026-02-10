@@ -23,8 +23,8 @@ app.use('/', salesHistoryRoutes);
 
 // --- Generic Fallback for SPA (Optional but good practice) ---
 // If no API route or static file is found, send the main html file.
-// This is useful if you create a more complex single-page application.
-app.get('*', (req, res) => {
+// The change from '*' to '/*' fixes the crash with newer Express versions.
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'upload.html'));
 });
 
