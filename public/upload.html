@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga de Historial de Ventas</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f9; margin: 0; }
+        .container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #333; }
+        input[type="file"] { border: 1px solid #ccc; padding: 0.5rem; border-radius: 4px; }
+        button { background-color: #007bff; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
+        button:hover { background-color: #0056b3; }
+        .status { margin-top: 1.5rem; font-size: 1rem; font-weight: bold; }
+        .status.success { color: #28a745; }
+        .status.error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cargar Archivo de Ventas (.xlsx)</h1>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="file" accept=".xlsx" required>
+            <button type="submit">Subir Archivo</button>
+        </form>
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const statusDiv = document.getElementById('status');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            statusDiv.textContent = 'Subiendo y procesando...';
+            statusDiv.className = 'status';
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                // La URL del endpoint de la API. Asume que la API y la UI están en el mismo host y puerto.
+                const response = await fetch('/upload/sales-history', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusDiv.textContent = result.message || 'Archivo procesado.';
+                    statusDiv.classList.add('success');
+                } else {
+                    throw new Error(result.message || 'Ocurrió un error desconocido.');
+                }
+
+            } catch (error) {
+                statusDiv.textContent = 'Error: ' + error.message;
+                statusDiv.classList.add('error');
+            }
+        });
+    </script>
+</body>
+</html>
