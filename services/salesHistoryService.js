@@ -11,8 +11,8 @@ function convertExcelDate(serial) {
 }
 
 /**
- * (Reescrito para ser más robusto)
- * Parsea una cadena de fecha (ej. '13/04/26' o '13-04-2026') al formato 'YYYY-MM-DD'.
+ * Parsea una cadena de fecha (ej. '4/13/26') al formato 'YYYY-MM-DD'.
+ * Asume el formato de entrada MM/DD/YY.
  */
 function parseDateString(dateStr) {
     if (typeof dateStr !== 'string') {
@@ -20,27 +20,25 @@ function parseDateString(dateStr) {
     }
 
     const trimmedStr = dateStr.trim();
-    // Reemplaza guiones por slashes para unificar el separador
     const normalizedStr = trimmedStr.replace(/-/g, '/');
     const parts = normalizedStr.split('/');
 
     if (parts.length !== 3) {
-        // Si no es el formato esperado, devolver el original para que falle y nos demos cuenta.
         return dateStr;
     }
 
-    let [day, month, year] = parts;
+    // --- CORRECCIÓN: Se invierte el orden de mes y día ---
+    let [month, day, year] = parts;
 
     if (year.length === 2) {
         const yearNum = parseInt(year, 10);
         year = (yearNum < 70) ? `20${year}` : `19${year}`; // Convierte '26' a '2026'
     }
 
-    // Asegurarse de que el día y el mes tengan dos dígitos.
     day = day.padStart(2, '0');
     month = month.padStart(2, '0');
 
-    return `${year}-${month}-${day}`; // Formato correcto para PostgreSQL: YYYY-MM-DD
+    return `${year}-${month}-${day}`; // Formato correcto: YYYY-MM-DD
 }
 
 function validateRows(data) {
@@ -75,7 +73,6 @@ const uploadSalesHistoryInBatches = async (file) => {
         if (typeof convertedDate === 'number') {
           convertedDate = convertExcelDate(convertedDate);
         } else {
-          // Ahora cualquier otra cosa (asumimos string) pasará por el nuevo parser.
           convertedDate = parseDateString(convertedDate);
         }
       }
