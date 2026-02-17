@@ -6,11 +6,23 @@ const parseExcel = (file) => {
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
 
-  // --- Solution ---
-  // The `raw: false` option forces the library to read the formatted string
-  // of cells (e.g., "2397.5") instead of their raw underlying numeric value.
-  // This ensures that numbers and dates are parsed as you see them in Excel.
-  return xlsx.utils.sheet_to_json(sheet, { raw: false });
+  // La opción `raw: false` lee la cadena de texto formateada de las celdas.
+  const jsonData = xlsx.utils.sheet_to_json(sheet, { raw: false });
+
+  // --- NUEVO: Elimina espacios en blanco de los encabezados ---
+  // Esto previene errores si los nombres de columna en Excel tienen espacios.
+  const trimmedData = jsonData.map(row => {
+    const newRow = {};
+    for (const key in row) {
+      if (Object.prototype.hasOwnProperty.call(row, key)) {
+        const trimmedKey = key.trim();
+        newRow[trimmedKey] = row[key];
+      }
+    }
+    return newRow;
+  });
+
+  return trimmedData;
 };
 
 module.exports = { parseExcel };
